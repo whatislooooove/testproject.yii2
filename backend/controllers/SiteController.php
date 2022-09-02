@@ -70,10 +70,10 @@ class SiteController extends Controller
     {
         $appleCount = null;
         $applesAr = [];
-        if (!is_null(Yii::$app->request->post('submit'))) {
+        if (Yii::$app->request->post('submit') == 'create_apples') {
             $appleCount = rand(3, 9);
             for ($i = 0; $i < $appleCount; $i++) {
-                $applesAr[] = new Yii::$app->apple();
+                $applesAr[] = new Yii::$app->apple($i);
             }
         }
 

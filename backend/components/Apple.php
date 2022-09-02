@@ -14,17 +14,18 @@ class Apple
         return "Вы полностью съели яблоко";
     }
 
-    public $color, $spawnDate, $fallDate, $isFresh, $onTheTree, $eaten, $size;
+    public $color, $spawnDate, $fallDate, $isFresh, $onTheTree, $eaten, $size, $appleNumber;
 
-    public function __construct($config = [])
+    public function __construct($appleNumber)
     {
         $this->color = $this->colors[rand(0, count($this->colors) - 1)];
-        $this->spawnDate = date('F j, Y, H:i:s', rand(0, time()));
+        $this->spawnDate = date('d-m-Y, H:i:s', rand(0, time()));
         $this->fallDate = null;
         $this->isFresh = true;
         $this->onTheTree = true;
         $this->eaten = 0;
         $this->size = 100;
+        $this->appleNumber = $appleNumber;
     }
 
     public function fallToGround() {

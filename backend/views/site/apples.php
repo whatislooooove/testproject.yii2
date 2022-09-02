@@ -20,6 +20,7 @@ use yii\helpers\Html; ?>
 
 <?= Html::beginForm(['site/apples'], 'post', ['enctype' => 'multipart/form-data']) ?>
 <?= Html::submitButton('Grow apples!',['class'=>'btn btn-info', 'name' => 'submit', 'value' => 'create_apples']) ?>
+<?= Html::submitButton('Cut down apple trees and remove all apples...',['class'=>'btn btn-warning ml-5', 'name' => 'submit', 'value' => 'remove_apples']) ?>
 <?= Html::endForm() ?>
 
 <div class="row">
@@ -28,20 +29,20 @@ use yii\helpers\Html; ?>
 foreach ($apples as $key => $apple):
 ?>
     <div class="col-sm-6 my-2">
-        <div class="card">
+        <div class="card" data-index="<?=$apple->appleNumber?>">
             <div class="card-body">
                 <h5 class="card-title">Apple #<?=$key?></h5>
-                <p class="card-text">Color: <?=$apple->color?><br>Spawn date: <?=$apple->spawnDate?><br>
-                    <?=$apple->isFresh ? "Fresh apple" : "Rotten apple"?><br>
-                    <?=$apple->onTheTree ? "Apple on the tree" : "Apple on the ground"?><br>
-                    Eaten: <?=$apple->eaten?>%<br>
-                    Size: <?=$apple->size?>%<br></p>
-                <div>
-                    <a href="#" class="btn btn-primary">Drop to the ground!</a>
+                <div class="card-data">Color: <?=$apple->color?><br>Spawn date: <?=$apple->spawnDate?></div>
+                <div class="freshness"><?=$apple->isFresh ? "Fresh apple" : "Rotten apple"?></div>
+                <div class="apple-state"><?=$apple->onTheTree ? "Apple on the tree" : "Apple on the ground"?></div>
+                <div class="apple-eaten row mx-0">Eaten: <div class="eaten-percent ml-1"><?=$apple->eaten?></div>%</div>
+                <div class="apple-eaten row mx-0">Size: <div class="size-percent ml-1"><?=$apple->size?></div>%</div>
+                <div class="mt-3">
+                    <a href="javascript:dropApple(<?=$apple->appleNumber?>)" class="btn btn-primary drop-btn">Drop to the ground!</a>
                     <div class="input-group my-3">
-                        <input type="text" class="form-control col-sm-5" placeholder="Percent" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                        <input type="number" class="form-control col-sm-5" placeholder="Percent" aria-label="Percent" aria-describedby="basic-addon2" min="0" max="100">
                         <div class="input-group-append">
-                            <a href="#" class="btn btn-primary">Eat!</a>
+                            <a href="javascript:eatApple(<?=$apple->appleNumber?>)" class="btn btn-primary eat-btn disabled">Eat!</a>
                         </div>
                     </div>
                 </div>
