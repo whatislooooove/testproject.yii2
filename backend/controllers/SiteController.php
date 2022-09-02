@@ -8,6 +8,7 @@ use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\Response;
+use yii\helpers\VarDumper;
 
 /**
  * Site controller
@@ -67,7 +68,18 @@ class SiteController extends Controller
 
     public function actionApples()
     {
-        return $this->render('apples');
+        $appleCount = null;
+        $applesAr = [];
+        if (!is_null(Yii::$app->request->post('submit'))) {
+            $appleCount = rand(3, 9);
+            for ($i = 0; $i < $appleCount; $i++) {
+                $applesAr[] = new Yii::$app->apple();
+            }
+        }
+
+        return $this->render('apples', [
+            'apples' => $applesAr
+        ]);
     }
 
     /**
