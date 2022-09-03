@@ -50,9 +50,7 @@ class m220903_104842_apples extends Migration
 
     public function down()
     {
-        echo "m220903_104842_apples cannot be reverted.\n";
-
-        return false;
+        $this->dropTable('{{%apples}}');
     }
 
 }
