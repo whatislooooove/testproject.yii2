@@ -3,6 +3,7 @@
 namespace app\components;
 
 
+use app\models\Apples;
 use yii\base\ErrorException;
 
 class Apple
@@ -10,21 +11,25 @@ class Apple
     private $colors = ['green', 'red', 'yellow', 'yellow-red', 'green-red', 'golden'];
     private $msg = "";
 
-    private function delete() {
-        return "Вы полностью съели яблоко";
-    }
-
     public $color, $spawnDate, $fallDate, $isFresh, $onTheTree, $eaten, $size, $appleNumber;
 
-    public function __construct($appleNumber)
+    public function __construct($appleNumber,
+        $color = null,
+        $spawnDate = null,
+        $fallDate = null,
+        $isFresh = null,
+        $onTheTree = null,
+        $eaten = null,
+        $size = null
+    )
     {
-        $this->color = $this->colors[rand(0, count($this->colors) - 1)];
-        $this->spawnDate = date('d-m-Y, H:i:s', rand(0, time()));
-        $this->fallDate = null;
-        $this->isFresh = true;
-        $this->onTheTree = true;
-        $this->eaten = 0;
-        $this->size = 100;
+        $this->color = $color ?: $this->colors[rand(0, count($this->colors) - 1)];
+        $this->spawnDate = $spawnDate ? date('d-m-Y, H:i:s', $spawnDate) : date('d-m-Y, H:i:s', rand(0, time()));
+        $this->fallDate = $fallDate ? date('d-m-Y, H:i:s', $fallDate) : null;
+        $this->isFresh = $isFresh ?: true;
+        $this->onTheTree = !is_null($onTheTree) ? (bool)$onTheTree : true;
+        $this->eaten = $eaten ?: 0;
+        $this->size = $size ?: 100;
         $this->appleNumber = $appleNumber;
     }
 
@@ -32,6 +37,11 @@ class Apple
         if ($this->onTheTree) {
             $this->onTheTree = false;
             $this->msg = "Apple fell to the ground!<br>";
+
+            $thisApple = Apples::find()->where(['apple_number' => $this->appleNumber])->one();
+            $thisApple->on_the_tree = 0;
+            $thisApple->falled_at = time();
+            $thisApple->save();
         }
         else {
             $this->msg = "The apple is already on the ground!<br>";
@@ -52,13 +62,17 @@ class Apple
         }
         else {
             $this->eaten += $percent;
+            $thisApple = Apples::find()->where(['apple_number' => $this->appleNumber])->one();
             if ($this->eaten >= 100) {
                 $this->msg = "You completely ate this apple<br>";
                 $this->size = 0;
-                //$this->delete(); //допилить удаление
+                $thisApple->delete();
             }
             else {
                 $this->size =- $this->eaten;
+
+                $thisApple->eaten = $this->eaten;
+                $thisApple->save();
                 $this->msg = "You took a bite of $percent% of that apple. $this->eaten% eaten<br>";
             }
         }
