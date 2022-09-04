@@ -1,20 +1,10 @@
-<h1>Apples!</h1>
+<h1>Welcome to your apple farm</h1>
 <?php
 /**
  * @var $apples
  */
 
 $arApples = [];
-//$apple = new Yii::$app->apple();
-//$apple2 = new Yii::$app->apple();
-//
-//echo $apple->spawnDate . '<br>';
-//echo $apple2->fallToGround();
-//echo $apple2->eat(30);
-//echo $apple2->eat(69);
-//use yii\bootstrap4\Button;
-//echo $apples;
-use yii\bootstrap4\ActiveForm;
 use yii\helpers\Html;
 
 $paramsCreate = ['class'=>'btn btn-info', 'name' => 'submit', 'value' => 'create_apples'];
@@ -30,8 +20,7 @@ else {
 
 
 
-<?= Html::beginForm(['site/apples'], 'post', ['enctype' => 'multipart/form-data']) ?>
-<?php //заменить кнопки ссылками?>
+<?= Html::beginForm(['site/apples'], 'post', ['enctype' => 'multipart/form-data', 'class' => 'mt-4']) ?>
 <?= Html::submitButton('Grow apples!',$paramsCreate) ?>
 <?= Html::submitButton('Cut down apple trees and remove all apples...', $paramsRemove) ?>
 <?= Html::endForm() ?>
@@ -47,8 +36,8 @@ if (count($apples) > 0):
             <div class="card-body">
                 <h5 class="card-title">Apple #<?=$apple->appleNumber?></h5>
                 <div class="card-data">Color: <?=$apple->color?><br>Spawn date: <?=$apple->spawnDate?></div>
-                <div class="fall-date"><?=$apple->fallDate ? 'Fall date: ' . $apple->fallDate : ''?></div>
-                <div class="timer row mx-0"><?=$apple->fallDate ? "<div class=\"ml-1\" id=\"$apple->appleNumber\"></div>" : ''?></div>
+                <div class="fall-date row mx-0"><?=$apple->fallDate ? 'Fall date: ' . '<div class="fall-date-value ml-1">' . $apple->fallDate . '</div>' : ''?></div>
+                <div class="timer row mx-0" data-index="<?=$apple->appleNumber?>"><?=$apple->isFresh ? "" : "Worms eat this apple..."?></div>
                 <div class="freshness"><?=$apple->isFresh ? "Fresh apple" : "Rotten apple"?></div>
                 <div class="apple-state"><?=$apple->onTheTree ? "Apple on the tree" : "Apple on the ground"?></div>
                 <div class="apple-eaten row mx-0">Eaten: <div class="eaten-percent ml-1"><?=$apple->eaten?></div>%</div>
@@ -59,9 +48,10 @@ if (count($apples) > 0):
                     <div class="input-group my-3">
                         <input type="number" onchange="handleChange(this);" class="form-control col-sm-5" placeholder="Percent" aria-label="Percent" aria-describedby="basic-addon2" min="0" max="100">
                         <div class="input-group-append">
-                            <a href="javascript:eatApple(<?=$apple->appleNumber?>)" class="btn btn-primary eat-btn <?=$apple->onTheTree ? 'disabled' : ''?>">Eat!</a>
+                            <a href="javascript:eatApple(<?=$apple->appleNumber?>)" class="btn btn-primary eat-btn <?=($apple->onTheTree || !$apple->isFresh) ? 'disabled' : ''?>">Eat!</a>
                         </div>
                     </div>
+                    <a href="javascript:removeApple(<?=$apple->appleNumber?>)" class="btn btn-danger remove-btn">Throw in the trash</a>
                 </div>
             </div>
         </div>
@@ -76,3 +66,6 @@ else:
 endif;
 ?>
 </div>
+<script>
+    setTimer();
+</script>

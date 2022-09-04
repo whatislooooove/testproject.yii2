@@ -38,4 +38,30 @@ class AppleController extends Controller
             echo json_encode(['result' => 'good']);
         }
     }
+
+    public function actionRot() {
+        if (Yii::$app->request->post('apple_number')) {
+
+            $appleNum = Yii::$app->request->post('apple_number');
+
+            $appleData = Apples::find()->where(['apple_number' => $appleNum])->asArray()->one();
+            $apple = new Yii::$app->apple($appleNum, $appleData['color'], $appleData['created_at'],
+                $appleData['falled_at'], $appleData['is_fresh'], $appleData['on_the_tree'], $appleData['eaten'],
+                100 - $appleData['eaten']);
+            $apple->rot();
+
+            echo json_encode(['result' => 'good']);
+        }
+    }
+
+    public function actionRemove() {
+        if (Yii::$app->request->post('apple_number')) {
+            $appleNum = Yii::$app->request->post('apple_number');
+
+            $appleData = Apples::find()->where(['apple_number' => $appleNum])->one();
+            $appleData->delete();
+
+            echo json_encode(['result' => 'good']);
+        }
+    }
 }

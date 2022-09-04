@@ -17,16 +17,16 @@ class Apple
         $color = null,
         $spawnDate = null,
         $fallDate = null,
-        $isFresh = null,
+        $isFresh = true,
         $onTheTree = null,
         $eaten = null,
         $size = null
     )
     {
         $this->color = $color ?: $this->colors[rand(0, count($this->colors) - 1)];
-        $this->spawnDate = $spawnDate ? date('d-m-Y, H:i:s', $spawnDate) : date('d-m-Y, H:i:s', rand(0, time()));
-        $this->fallDate = $fallDate ? date('d-m-Y, H:i:s', $fallDate) : null;
-        $this->isFresh = $isFresh ?: true;
+        $this->spawnDate = $spawnDate ? date('Y-m-d, H:i:s', $spawnDate) : date('Y-m-d, H:i:s', rand(0, time()));
+        $this->fallDate = $fallDate ? date('Y-m-d, H:i:s', $fallDate) : null;
+        $this->isFresh = $isFresh;
         $this->onTheTree = !is_null($onTheTree) ? (bool)$onTheTree : true;
         $this->eaten = $eaten ?: 0;
         $this->size = $size ?: 100;
@@ -75,6 +75,22 @@ class Apple
                 $thisApple->save();
                 $this->msg = "You took a bite of $percent% of that apple. $this->eaten% eaten<br>";
             }
+        }
+
+        return $this->msg;
+    }
+
+    public function rot() {
+        if ($this->isFresh) {
+            $this->isFresh = false;
+            $thisApple = Apples::find()->where(['apple_number' => $this->appleNumber])->one();
+            $thisApple->is_fresh = 0;
+            $thisApple->save();
+
+            $this->msg = "You spoiled this apple...";
+        }
+        else {
+            $this->msg = "This apple is already spoiled";
         }
 
         return $this->msg;
